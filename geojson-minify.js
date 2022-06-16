@@ -213,7 +213,7 @@
 						else return (parseFloat(p3)).toFixed(prec);
 					});
 					// Remove trailing zeros that don't add anything useful
-					p2 = p2.replace(/([0-9]\.[0-9]*?)0+(\s*[\,\]])/g,function(m,p3,p4){ return p3+p4; });
+					p2 = p2.replace(/([0-9]\.[0-9]+?)0+(\s*[\,\]])/g,function(m,p3,p4){ return p3+p4; });
 				}else{
 					p2 = p2.replace(/([,\[] ?\-?[0-9])\.[0-9]+/g,function(m,p3){ return p3; });
 				}
