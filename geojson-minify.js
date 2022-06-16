@@ -63,6 +63,8 @@
 		delete this.input;
 		delete this.json;
 		delete this.properties;
+		
+		document.getElementById('properties').innerHTML = "";
 		document.getElementById('filedetails').innerHTML = "";
 	};
 	Minify.prototype.handleFileSelect = function(evt,typ){
@@ -95,7 +97,7 @@
 			this.output = '';
 			// Closure to capture the file information.
 			reader.onloadend = function(evt) {
-        var result;
+				var result;
 				if (evt.target.readyState == FileReader.DONE) { // DONE == 2
 					if(stop > f.size - 1){
 						var l = evt.target.result.regexLastIndexOf(/[\n\r]/);
