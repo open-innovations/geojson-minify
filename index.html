@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width" />
+	<title>GeoJSON minify</title>
+	<link rel="StyleSheet" href="style.css" type="text/css" />
+	<link rel="icon" href="https://open-innovations.org/resources/images/logos/oi-square-14.svg" />
+	<script type="text/javascript" src="geojson-minify.js"></script>
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:site" content="@OpenInnovates">
+	<meta name="twitter:url" property="og:url" content="https://odileeds.github.io/geojson-minify/">
+	<meta name="twitter:title" property="og:title" content="GeoJSON Minify">
+	<meta name="twitter:description" property="og:description" content="Minify GeoJSON files on the web by truncating coordinates and removing properties.">
+	<meta name="twitter:image" property="og:image" content="https://open-innovations.org/resources/images/logos/oi-square-14.png">
+</head>
+<body>
+	<header>
+		<div class="b1-bg padded">
+			<div class="holder" style="text-align:center;">
+				<a href="https://open-innovations.org/"><img src="https://open-innovations.org/resources/images/logos/oi-square-14.svg" width="100px" height="100px" style="margin-bottom:1em;" /></a>
+				<h1>GeoJSON Minify</h1>
+			</div>
+		</div>
+	</header>
+
+	<div id="progressbar" class="done"><div class="progress-inner"></div></div>
+	<div id="main" class="tallpadded">
+
+		<form id="validation_form" method="post" enctype="multipart/form-data" accept-charset="UTF-8">
+			<div class="holder">
+					<input id="no_js" type="hidden" name="no_js" value="1" />
+					<input type="hidden" value="✓" name="utf8">
+					<input type="hidden" name="urls[]" value="" />
+					<input type="hidden" name="urls[]" value="" />
+					<input type="hidden" name="files[]" value="" />
+
+					<p>Quickly minify (compress) a GeoJSON file to reduce file sizes and make web mapping quicker. Assumes your <a href="https://geojson.org/">GeoJSON conforms to RFC 7946 (2016)</a> i.e. uses World Geodetic System 1984 (WGS 84) coordinates.</p>
+
+					<div id="drop_zone" class="dropzone">
+						<div class="helpertext">
+							Drop GeoJSON file here (or click to browse files)<br />
+							<input id="standard_files" class="fileselect" type="file" title="browse" name="files[]" accept=".geojson, .json">
+						</div>
+						<div id="filedetails"></div>
+					</div>
+					
+			</div>
+			
+			<div id="results">
+			
+				<div class="holder">
+					<p style="text-align:center;font-size:1em;"><button type="button" id="save" class="seasonal">Save minified GeoJSON</button></p>
+				</div>
+
+				<div class="panel b6-bg">
+					<div class="holder">
+						<div id="filesize"></div>
+						<textarea id="geojson"></textarea>
+					</div>
+				</div>
+
+			</div>
+		</form>
+	</div>
+
+	<footer class="b1-bg">
+		<div class="holder">
+			<div class="tallpadded">
+				<h2 id="notes">Notes</h2>
+				<p>At Open Innovations we often work with GeoJSON files for web mapping. A common issue we have is that GeoJSON files are often much larger than they need to be. Quite a lot of the time this is down to unnecessary coordinate precision. When people provide coordinates to 15 decimal places that is about a ten-billionth of a metre (at the Equator) on the surface of the Earth. Do people really know their coordinates to atomic precision? Probably not. If 1 metre resolution is good enough then 5 decimal places are all that is required and removing 10 digits per coordinate can reduce the file size quite a bit (4 decimal places is roughly 10m resolution). Then there are other issues like lots of white space that certainly can make things more readable but can add quite a lot to a file download. This tool aims to fix some of these common issues and produce smaller files.</p>
+				<h3>Credits</h3>
+				<p>Created by Stuart Lowe, <a href="http://open-innovations.org/projects/">Open Innovations</a> 2020. MIT Licence. Find <a href="https://github.com/odileeds/CSV2GeoJSON">the code on Github</a>.</p>
+			</div>
+		</div>
+	</footer>
+
+	<script src="https://open-innovations.org/resources/oi.log.js"></script>
+	<script>
+	OI.log.setup({'id':'open-innovations','target':['odileeds.github.io','open-innovations.github.io']}).add('action=view');
+	</script>
+</body>
+</html>
