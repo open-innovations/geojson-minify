@@ -201,21 +201,27 @@
 		str = '';
 
 		// Loop over the features and stringify each separately (this lets us put newlines between them)
-		for(f = 0; f < json.features.length; f++) str += (str ? ",\n":"")+JSON.stringify(json.features[f]);
+		for(f = 0; f < json.features.length; f++){
+			tstr = JSON.stringify(json.features[f]);
+			// Limit coordinate precision to the coordinates variable
+			tstr = tstr.replace(/("coordinates" ?:)([^\"\}]*)/g,function(m,p1,p2){
+				var rtn = p1;
+				if(prec > 0){
+					console.log(p2);
+					p2 = p2.replace(RegExp('(\-?[0-9]+\.[0-9]*)','g'),function(m,p3){
+						return (parseFloat(p3)).toFixed(prec);
+					});
+				}else{
+					p2 = p2.replace(/([,\[] ?\-?[0-9])\.[0-9]+/g,function(m,p3){ return p3; });
+				}
+				return rtn + p2;
+			});
+			str += (str ? ",\n":"")+tstr;
+		}
 
 		// Get the precision to use
 		prec = document.getElementById('precision').value;
 	
-		// Limit coordinate precision to the coordinates variable
-		str = str.replace(/"coordinates":([^\"\}]*)/g,function(m,p1){
-			if(prec > 0){
-				return p1.replace(RegExp('(\-?[0-9]\.[0-9]+)','g'),function(m,p1){
-					return (parseFloat(p1)).toFixed(prec);
-				});
-			}else{
-				return p1.replace(/(\-?[0-9])\.[0-9]+/g,function(m,p1){ return p1; });
-			}
-		});
 		// Build the output
 		output = strstart+'\n'+str+'\n'+strend;
 		document.getElementById('geojson').innerHTML = output;
