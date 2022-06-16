@@ -129,15 +129,17 @@
 			str += (str ? ",\n":"")+JSON.stringify(json.features[f]);
 		}
 		var prec = document.getElementById('precision').value;
-		
-		if(prec > 0){
-			//str = str.replace(RegExp('(\-?[0-9]\.[0-9]{'+(prec)+'})[0-4][0-9]*','g'),function(m,p1){ return p1; });
-			str = str.replace(RegExp('(\-?[0-9]\.[0-9]+)','g'),function(m,p1){
-				return (parseFloat(p1)).toFixed(prec);
-			});
-		}else{
-			str = str.replace(/(\-?[0-9])\.[0-9]+/g,function(m,p1){ return p1; });
-		}
+	
+		// Limit coordinate precision to the coordinates variable
+		str = str.replace(/"coordinates":([^\"\}]*)/g,function(m,p1){
+			if(prec > 0){
+				return p1.replace(RegExp('(\-?[0-9]\.[0-9]+)','g'),function(m,p1){
+					return (parseFloat(p1)).toFixed(prec);
+				});
+			}else{
+				return p1.replace(/(\-?[0-9])\.[0-9]+/g,function(m,p1){ return p1; });
+			}
+		});
 		output = strstart+'\n'+str+'\n'+strend;
 		document.getElementById('geojson').innerHTML = output;
 		document.getElementById('filesize').innerHTML = 'Original file: '+niceSize(this.filesize)+'. Minified: '+niceSize(output.length)+'. Savings: '+niceSize(this.filesize-output.length)+' - <span class="pc">'+(100*(this.filesize-output.length)/this.filesize).toFixed(1)+'%</span> smaller.';

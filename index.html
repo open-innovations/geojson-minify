@@ -35,9 +35,8 @@
 					<input type="hidden" name="urls[]" value="" />
 					<input type="hidden" name="files[]" value="" />
 
-					<p>Quickly minify (compress) a GeoJSON file to reduce file sizes and make web mapping quicker. Assumes your <a href="https://geojson.org/">GeoJSON conforms to RFC 7946 (2016)</a> i.e. uses World Geodetic System 1984 (WGS 84) coordinates.</p>
+					<p>Minify (compress) a GeoJSON file to reduce file sizes and make web-mapping quicker. Assumes your <a href="https://geojson.org/">GeoJSON conforms to RFC 7946 (2016)</a> (that means the coordinates are in WGS 84).</p>
 
-					<p><label for="precision">Precision</label>: <input type="number" id="precision" value="5" min="0" max="21" /><span class="precision-metres"></span></p>
 					<div id="drop_zone" class="dropzone">
 						<div class="helpertext">
 							Drop GeoJSON file here (or click to browse files)<br />
@@ -45,6 +44,7 @@
 						</div>
 						<div id="filedetails"></div>
 					</div>
+					<p><label for="precision">Coordinate precision</label>: <input type="number" id="precision" value="5" min="0" max="21" /> d.p. is roughly <span class="precision-metres"></span></p>
 					
 			</div>
 			
@@ -71,14 +71,15 @@
 				<h2 id="notes">Notes</h2>
 				<p>At Open Innovations we often work with GeoJSON files for web mapping. A common issue we have is that GeoJSON files are often much larger than they need to be. Quite a lot of the time this is down to unnecessary coordinate precision. When people provide coordinates to 15 decimal places that is about a ten-billionth of a metre (at the Equator) on the surface of the Earth. Do people really know their coordinates to atomic precision? Probably not. If 1 metre resolution is good enough then 5 decimal places are all that is required and removing 10 digits per coordinate can reduce the file size quite a bit (4 decimal places is roughly 10m resolution). Then there are other issues like lots of white space that certainly can make things more readable but can add quite a lot to a file download. This tool aims to fix some of these common issues and produce smaller files.</p>
 				<h3>Credits</h3>
-				<p>Created by Stuart Lowe, <a href="http://open-innovations.org/projects/">Open Innovations</a> 2020. MIT Licence. Find <a href="https://github.com/odileeds/CSV2GeoJSON">the code on Github</a>.</p>
+				<p>Created by Stuart Lowe, <a href="http://open-innovations.org/projects/">Open Innovations</a> 2022. MIT Licence. Find <a href="https://github.com/odileeds/geojson-minify">the code on Github</a> (or view source).</p>
 			</div>
 		</div>
 	</footer>
-
+<!--
 	<script src="https://open-innovations.org/resources/oi.log.js"></script>
 	<script>
 	OI.log.setup({'id':'open-innovations','target':['odileeds.github.io','open-innovations.github.io']}).add('action=view');
 	</script>
+-->
 </body>
 </html>

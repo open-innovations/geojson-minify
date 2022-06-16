@@ -181,6 +181,7 @@ textarea, td, th, table { border: 1px solid #cccccc; }
 	padding: 2em;
 	text-align: center;
 	position: relative;
+	margin-bottom: 1em;
 }
 .dropzone .filedetails { display: none; }
 .dropzone.loaded { border: 2px solid #333333; color: #333333; }
@@ -195,7 +196,7 @@ textarea, td, th, table { border: 1px solid #cccccc; }
 	height: 100%;
 	opacity: 0;
 }
-.precision-metres { margin-left: 0.5em; }
+#precision { width: 4em; }
 .glory .holder, .glory-opacity {
 	height: auto;
 }
