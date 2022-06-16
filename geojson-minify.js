@@ -156,9 +156,9 @@
 			});
 			return {'li':li,'inp':inp,'btn':btn,'p':p};
 		}
-    var ul,props,sorted,h3;
+		var ul,props,sorted,h3;
 
-    ul = document.createElement('ul');
+		ul = document.createElement('ul');
 		ul.classList.add('toggles');
 		props = this.properties;
 		sorted = Object.keys(this.properties).sort(function(a,b){return props[a].b-props[b].b;}).reverse();

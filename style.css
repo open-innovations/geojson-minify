@@ -245,7 +245,7 @@ ol li { line-height: 1.75em; }
 	padding: 0px;
 	margin-bottom: 0;
 }
-#save { font-size: 1.25em; border: 1px solid black; margin-bottom: 0.75em;}
+#save { font-size: 1.25em; margin-bottom: 0.75em;}
 #results > .holder:first-child { padding: 0em 1em 0em 1em; }
 #main { min-height: 500px; }
 h3 { margin-top: 1em; margin-bottom: 0.5em; }
