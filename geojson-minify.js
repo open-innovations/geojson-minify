@@ -36,13 +36,26 @@
 			return _obj.handleFileSelect(evt,'geojson');
 		}, false);
 
+		function updatePrecision(){
+			var circ = 40075017;
+			var dp = document.getElementById('precision').value;
+			var prec = (circ/360)/Math.pow(10,dp);
+			document.querySelector('.precision-metres').innerHTML = niceSizeMetres(prec)
+			if(_obj.filecontent) _obj.processGeoJSON(_obj.filecontent);
+		}
+
+		updatePrecision();
+		document.getElementById('precision').addEventListener('change',updatePrecision);
+
 	}
 	Minify.prototype.reset = function(){
 		document.getElementById('drop_zone').classList.remove('loaded');
 		delete this.geojson;
+		delete this.filecontent;
 		delete this.filesize;
 		delete this.file;
 		delete this.output;
+		delete this.input;
 		document.getElementById('filedetails').innerHTML = "";
 	}
 	Minify.prototype.handleFileSelect = function(evt,typ){
@@ -84,6 +97,7 @@
 					var lines = result.match(/[\n\r]+/g);
 					var cols = result.slice(0,result.indexOf("\n")).split(/,(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/);
 					// Render table
+					_obj.filecontent = result;
 					_obj.processGeoJSON(result);
 				}
 			};
@@ -94,6 +108,7 @@
 
 			document.getElementById('filedetails').innerHTML = output;
 			document.getElementById('drop_zone').classList.add('loaded');
+			
 		}
 		return this;
 	};
@@ -104,15 +119,23 @@
 		output.replace(/^(.*,"features":\[).*(\]\})$/,function(m,p1,p2){ strstart = p1; strend = p2; return p1; });
 		str = '';
 
-		for(var i = 0; i < json.features.length; i++){
-			
-			str += (str ? ",\n":"")+JSON.stringify(json.features[i]);
+		for(var f = 0; f < json.features.length; f++){
+			str += (str ? ",\n":"")+JSON.stringify(json.features[f]);
+		}
+		var prec = document.getElementById('precision').value;
+		
+		if(prec > 0){
+			//str = str.replace(RegExp('(\-?[0-9]\.[0-9]{'+(prec)+'})[0-4][0-9]*','g'),function(m,p1){ return p1; });
+			str = str.replace(RegExp('(\-?[0-9]\.[0-9]+)','g'),function(m,p1){
+				return (parseFloat(p1)).toFixed(prec);
+			});
+		}else{
+			str = str.replace(/(\-?[0-9])\.[0-9]+/g,function(m,p1){ return p1; });
 		}
 		output = strstart+'\n'+str+'\n'+strend;
 		document.getElementById('geojson').innerHTML = output;
 		document.getElementById('filesize').innerHTML = 'Original file: '+niceSize(this.filesize)+'. Minified: '+niceSize(output.length)+'. Savings: '+niceSize(this.filesize-output.length)+' - <span class="pc">'+(100*(this.filesize-output.length)/this.filesize).toFixed(1)+'%</span> smaller.';
 		this.output = output;
-		console.log('done',this.output);
 		return this;
 	};
 	Minify.prototype.save = function(){
@@ -122,7 +145,7 @@
 		// Bail out if there is no Blob function
 		if(typeof Blob!=="function") return this;
 
-		var textFileAsBlob = new Blob([JSON.stringify(this.geojson)], {type:'text/plain'});
+		var textFileAsBlob = new Blob([this.output], {type:'text/plain'});
 		if(!this.file) this.file = "schema.json";
 		var fileNameToSaveAs = this.file.substring(0,this.file.lastIndexOf("."))+".geojson";
 
@@ -170,6 +193,21 @@
 		if(b > 1e6) return (b/1e6).toFixed(2)+" MB";
 		if(b > 1e3) return (b/1e3).toFixed(2)+" kB";
 		return (b)+" bytes";
+	}
+	function niceSizeMetres(b){
+		if(b > 1e3) return (b/1e3).toFixed(2)+" km";
+		if(b > 100) return Math.round(b)+" m";
+		if(b > 10) return (b).toFixed(1)+" m";
+		if(b > 1) return (b).toFixed(2)+" m";
+		if(b > 1e-2) return (b/1e-2).toFixed(1)+" cm";
+		if(b > 1e-3) return (b/1e-3).toFixed(1)+" mm - a pinhead is about 1mm";
+		if(b > 1e-6) return (b/1e-6).toFixed(1)+" &micro;m) - a piece of paper is about 90 &micro;m thick";
+		if(b > 1e-9) return (b/1e-9).toFixed(1)+" nm - a bacterial flagellum is about 20 nm";
+		if(b > 1e-12) return (b/1e-12).toFixed(1)+" pm - a hydrogen atom is about 25 pm";
+		if(b > 1e-15) return (b/1e-15).toFixed(1)+" fm";
+		if(b > 1e-18) return (b/1e-18).toFixed(1)+" am";
+		if(b > 1e-21) return (b/1e-21).toFixed(1)+" zm";
+		return (b)+" m";
 	}
 
 	OI.ready(function(){

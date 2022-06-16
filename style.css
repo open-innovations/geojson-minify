@@ -195,6 +195,7 @@ textarea, td, th, table { border: 1px solid #cccccc; }
 	height: 100%;
 	opacity: 0;
 }
+.precision-metres { margin-left: 0.5em; }
 .glory .holder, .glory-opacity {
 	height: auto;
 }
@@ -209,7 +210,7 @@ h2:first-child { margin-top: 0px; }
 }
 input, select {
 	font-size: 1em;
-	width: 100%;
+	min-height: 2em;
 }
 td.number, th.number {
 	text-align: center;
