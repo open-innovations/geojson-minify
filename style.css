@@ -232,6 +232,7 @@ input, select {
 	color: white;
 }
 ol li { line-height: 1.75em; }
+#loader { text-align: center; }
 #validation_form > .holder { padding: 2em 1em; }
 #main ul.tabs {
 	display: grid;

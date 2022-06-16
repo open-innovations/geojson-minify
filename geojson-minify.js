@@ -41,7 +41,7 @@
 			var prec = (circ/360)/Math.pow(10,dp);
 			document.querySelector('.precision-metres').innerHTML = niceSizeMetres(prec);
 			if(_obj.filecontent){
-				document.getElementById('filesize').innerHTML = loader;
+				document.getElementById('loader').innerHTML = loader;
 				document.querySelector('#geojson').innerHTML = "";
 				setTimeout(function(){
 					_obj.trimGeoJSON(_obj.filecontent);
@@ -67,7 +67,7 @@
 	};
 	Minify.prototype.handleFileSelect = function(evt,typ){
 
-		document.getElementById('filesize').innerHTML = loader;
+		document.getElementById('loader').innerHTML = loader;
 
 		dragOff(evt);
 
@@ -223,6 +223,7 @@
 		// Update the stats
 		document.getElementById('filesize').innerHTML = 'Original file: '+niceSize(this.filesize)+'. Minified: '+niceSize(output.length)+'. Savings: '+niceSize(this.filesize-output.length)+' - <span class="pc">'+(100*(this.filesize-output.length)/this.filesize).toFixed(1)+'%</span> smaller.';
 
+		document.getElementById('loader').innerHTML = '';
 		return this;
 	};
 	Minify.prototype.toggleProperty = function(p){
