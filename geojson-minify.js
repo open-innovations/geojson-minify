@@ -1,4 +1,4 @@
-
+/* Open Innovations GeoJSON Minifier v0.1 */
 (function(root){
 	// Part of the Open Innovations namespace
 	var OI = root.OI || {};
@@ -9,6 +9,7 @@
 			else document.addEventListener('DOMContentLoaded', fn);
 		};
 	}
+
 	var loader = '<svg version="1.1" width="64" height="64" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><g transform="matrix(.11601 0 0 .11601 -49.537 -39.959)"><path d="m610.92 896.12m183.9-106.17-183.9-106.17-183.9 106.17v212.35l183.9 106.17 183.9-106.17z" fill="black"><animate attributeName="opacity" values="1;0;0" keyTimes="0;0.7;1" dur="1s" begin="-0.83333s" repeatCount="indefinite" /></path><path d="m794.82 577.6m183.9-106.17-183.9-106.17-183.9 106.17v212.35l183.9 106.17 183.9-106.17z" fill="black"><animate attributeName="opacity" values="1;0;0" keyTimes="0;0.7;1" dur="1s" begin="-0.6666s" repeatCount="indefinite" /></path><path d="m1162.6 577.6m183.9-106.17-183.9-106.17-183.9 106.17v212.35l183.9 106.17 183.9-106.17z" fill="black"><animate attributeName="opacity" values="1;0;0" keyTimes="0;0.7;1" dur="1s" begin="-0.5s" repeatCount="indefinite" /></path><path d="m1346.5 896.12m183.9-106.17-183.9-106.17-183.9 106.17v212.35l183.9 106.17 183.9-106.17z" fill="black"><animate attributeName="opacity" values="1;0;0" keyTimes="0;0.7;1" dur="1s" begin="-0.3333s" repeatCount="indefinite" /></path><path d="m1162.6 1214.6m183.9-106.17-183.9-106.17-183.9 106.17v212.35l183.9 106.17 183.9-106.17z" fill="black"><animate attributeName="opacity" values="1;0;0" keyTimes="0;0.7;1" dur="1s" begin="-0.1666s" repeatCount="indefinite" /></path><path d="m794.82 1214.6m183.9-106.17-183.9-106.17-183.9 106.17v212.35l183.9 106.17 183.9-106.17z" fill="black"><animate attributeName="opacity" values="1;0;0" keyTimes="0;0.7;1" dur="1s" begin="0s" repeatCount="indefinite" /></path></g></svg>';
 
 	function Minify(){
@@ -17,18 +18,16 @@
 		// When the user focuses on the schema output, it all gets selected
 		document.querySelector('#geojson').addEventListener('focus',function(e){
 			console.log('focus',e);
-			e.target.select()
+			e.target.select();
 		});
 		
-		document.getElementById('save').addEventListener('click',function(){ _obj.save() });
-
+		document.getElementById('save').addEventListener('click',function(){ _obj.save(); });
 
 		// Setup the dnd listeners.
 		var dropZone = document.getElementById('drop_zone');
 		dropZone.addEventListener('dragover', dropOver, false);
 		dropZone.addEventListener('dragout', dragOff, false);
 
-		var _obj = this;
 		document.getElementById('standard_files').addEventListener('change',function(evt){
 			evt.stopPropagation();
 			evt.preventDefault();
@@ -40,12 +39,12 @@
 			var circ = 40075017;
 			var dp = document.getElementById('precision').value;
 			var prec = (circ/360)/Math.pow(10,dp);
-			document.querySelector('.precision-metres').innerHTML = niceSizeMetres(prec)
+			document.querySelector('.precision-metres').innerHTML = niceSizeMetres(prec);
 			if(_obj.filecontent){
 				document.getElementById('filesize').innerHTML = loader;
 				document.querySelector('#geojson').innerHTML = "";
 				setTimeout(function(){
-					_obj.processGeoJSON(_obj.filecontent);
+					_obj.trimGeoJSON(_obj.filecontent);
 				},200);
 			}
 		}
@@ -62,22 +61,24 @@
 		delete this.file;
 		delete this.output;
 		delete this.input;
+		delete this.json;
+		delete this.properties;
 		document.getElementById('filedetails').innerHTML = "";
-	}
+	};
 	Minify.prototype.handleFileSelect = function(evt,typ){
 
 		document.getElementById('filesize').innerHTML = loader;
 
 		dragOff(evt);
 
-		var files;
+		var files,f,output,start,stop,_obj;
 		if(evt.dataTransfer && evt.dataTransfer.files) files = evt.dataTransfer.files; // FileList object.
 		if(!files && evt.target && evt.target.files) files = evt.target.files;
 
 		if(typ == "geojson"){
 
 			// files is a FileList of File objects. List some properties.
-			var output = "";
+			output = "";
 			f = files[0];
 
 			this.file = f.name;
@@ -85,26 +86,23 @@
 			// ('+ (f.type || 'n/a')+ ')
 			output += '<strong>'+ (f.name)+ '</strong> - ' + niceSize(f.size) + ', last modified: ' + (f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a');
 
-			var start = 0;
-			var stop = f.size - 1; //Math.min(100000, f.size - 1);
+			start = 0;
+			stop = f.size - 1; //Math.min(100000, f.size - 1);
 
 			var reader = new FileReader();
 
-			var _obj = this;
+			_obj = this;
 			this.output = '';
 			// Closure to capture the file information.
 			reader.onloadend = function(evt) {
+        var result;
 				if (evt.target.readyState == FileReader.DONE) { // DONE == 2
 					if(stop > f.size - 1){
 						var l = evt.target.result.regexLastIndexOf(/[\n\r]/);
 						result = (l > 0) ? evt.target.result.slice(0,l) : evt.target.result;
 					}else result = evt.target.result;
 
-					var lines = result.match(/[\n\r]+/g);
-					var cols = result.slice(0,result.indexOf("\n")).split(/,(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/);
-					// Render table
-					_obj.filecontent = result;
-					_obj.processGeoJSON(result);
+					_obj.loadedGeoJSON(result);
 				}
 			};
 			
@@ -118,17 +116,93 @@
 		}
 		return this;
 	};
-	Minify.prototype.processGeoJSON = function(result){
-		var json = JSON.parse(result);
-		var output = JSON.stringify(json);
-		var str,strstart,strend;
+	Minify.prototype.loadedGeoJSON = function(result){
+		var f,p,_obj;
+		this.filecontent = result;
+		this.json = JSON.parse(result);
+		this.properties = {};
+		for(f = 0; f < this.json.features.length; f++){
+			if(this.json.features[f].properties){
+				for(p in this.json.features[f].properties){
+          if(this.json.features[f].properties[p]){
+            if(!this.properties[p]) this.properties[p] = {'n':0,'b':0,'active':true};
+            this.properties[p].n++;
+            this.properties[p].b += (',"'+p+'":'+JSON.stringify(this.json.features[f].properties[p])).length;
+          }
+				}
+			}
+		}
+		_obj = this;
+		function makeLI(p,b){
+			var id,li,lbl,btn,inp;
+			id = 'prop-'+p.replace(/ /g,'');
+			li = document.createElement('li');
+			li.classList.add('seasonal');
+			li.setAttribute('title',p);
+			lbl = document.createElement('label');
+			lbl.setAttribute('for',id);
+			lbl.innerHTML = '<b>'+p+'</b> ('+niceSize(b)+')';
+			btn = document.createElement('button');
+			btn.classList.add('close');
+			btn.innerHTML = '<span aria-hidden="true">×</span>';
+			inp = document.createElement('input');
+			inp.setAttribute('type','checkbox');
+			inp.setAttribute('checked','checked');
+			inp.setAttribute(id,id);
+			li.appendChild(lbl);
+			li.appendChild(btn);
+			btn.appendChild(inp);
+			inp.addEventListener('change',function(e){
+				_obj.toggleProperty(p);
+			});
+			return {'li':li,'inp':inp,'btn':btn,'p':p};
+		}
+    var ul,props,sorted,h3;
+
+    ul = document.createElement('ul');
+		ul.classList.add('toggles');
+		props = this.properties;
+		sorted = Object.keys(this.properties).sort(function(a,b){return props[a].b-props[b].b;}).reverse();
+		for(f = 0; f < sorted.length; f++){
+			p = sorted[f];
+			this.properties[p].toggle = new makeLI(p,this.properties[p].b);
+			ul.appendChild(this.properties[p].toggle.li);
+		}
+		if(sorted.length > 0){
+			h3 = document.createElement('h3');
+			h3.innerHTML = 'Properties';
+			document.getElementById('properties').appendChild(h3);
+			document.getElementById('properties').appendChild(ul);
+		}
+		return this.trimGeoJSON();
+	};
+	Minify.prototype.trimGeoJSON = function(){
+		var str,strstart,strend,f,p,prec,json,output;
+		// Get a copy of the JSON so we can manipulate it
+		json = clone(this.json);
+
+		// Remove any deselected properties
+		for(f = 0; f < json.features.length; f++){
+			if(json.features[f].properties){
+				for(p in this.properties){
+					if(this.properties[p] && !this.properties[p].active){
+						delete json.features[f].properties[p];
+					}
+				}
+			}
+		}
+
+		// Convert it to a string
+		output = JSON.stringify(json);
+		// Find the part before "features" and after it
 		output.replace(/^(.*,"features":\[).*(\]\})$/,function(m,p1,p2){ strstart = p1; strend = p2; return p1; });
 		str = '';
 
-		for(var f = 0; f < json.features.length; f++){
-			str += (str ? ",\n":"")+JSON.stringify(json.features[f]);
-		}
-		var prec = document.getElementById('precision').value;
+		// Loop over the features and stringify each separately (this lets us put newlines between them)
+		for(f = 0; f < json.features.length; f++) str += (str ? ",\n":"")+JSON.stringify(json.features[f]);
+
+		// Get the precision to use
+		prec = document.getElementById('precision').value;
 	
 		// Limit coordinate precision to the coordinates variable
 		str = str.replace(/"coordinates":([^\"\}]*)/g,function(m,p1){
@@ -140,11 +214,29 @@
 				return p1.replace(/(\-?[0-9])\.[0-9]+/g,function(m,p1){ return p1; });
 			}
 		});
+		// Build the output
 		output = strstart+'\n'+str+'\n'+strend;
 		document.getElementById('geojson').innerHTML = output;
-		document.getElementById('filesize').innerHTML = 'Original file: '+niceSize(this.filesize)+'. Minified: '+niceSize(output.length)+'. Savings: '+niceSize(this.filesize-output.length)+' - <span class="pc">'+(100*(this.filesize-output.length)/this.filesize).toFixed(1)+'%</span> smaller.';
+		// Save the output
 		this.output = output;
+
+		// Update the stats
+		document.getElementById('filesize').innerHTML = 'Original file: '+niceSize(this.filesize)+'. Minified: '+niceSize(output.length)+'. Savings: '+niceSize(this.filesize-output.length)+' - <span class="pc">'+(100*(this.filesize-output.length)/this.filesize).toFixed(1)+'%</span> smaller.';
+
 		return this;
+	};
+	Minify.prototype.toggleProperty = function(p){
+		this.properties[p].active = !this.properties[p].active;
+		var oncls = 'b5-bg';
+		var on = this.properties[p].toggle.inp.checked;
+		if(on){
+			this.properties[p].toggle.li.classList.remove(oncls.split(/ /));
+			this.properties[p].toggle.li.classList.add('seasonal');
+		}else{
+			this.properties[p].toggle.li.classList.remove('seasonal');
+			this.properties[p].toggle.li.classList.add(oncls.split(/ /));
+		}
+		return this.trimGeoJSON();
 	};
 	Minify.prototype.save = function(){
 
@@ -177,7 +269,7 @@
 		dl.click();
 
 		return this;
-	}
+	};
 	// Function to clone a hash otherwise we end up using the same one
 	function clone(hash) {
 		var json = JSON.stringify(hash);
