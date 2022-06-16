@@ -41,7 +41,13 @@
 			var dp = document.getElementById('precision').value;
 			var prec = (circ/360)/Math.pow(10,dp);
 			document.querySelector('.precision-metres').innerHTML = niceSizeMetres(prec)
-			if(_obj.filecontent) _obj.processGeoJSON(_obj.filecontent);
+			if(_obj.filecontent){
+				document.getElementById('filesize').innerHTML = loader;
+				document.querySelector('#geojson').innerHTML = "";
+				setTimeout(function(){
+					_obj.processGeoJSON(_obj.filecontent);
+				},200);
+			}
 		}
 
 		updatePrecision();
