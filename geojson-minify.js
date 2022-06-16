@@ -307,10 +307,10 @@
 		if(b > 10) return (b).toFixed(1)+" m";
 		if(b > 1) return (b).toFixed(2)+" m";
 		if(b > 1e-2) return (b/1e-2).toFixed(1)+" cm";
-		if(b > 1e-3) return (b/1e-3).toFixed(1)+" mm - a pinhead is about 1mm";
-		if(b > 1e-6) return (b/1e-6).toFixed(1)+" &micro;m) - a piece of paper is about 90 &micro;m thick";
-		if(b > 1e-9) return (b/1e-9).toFixed(1)+" nm - a bacterial flagellum is about 20 nm";
-		if(b > 1e-12) return (b/1e-12).toFixed(1)+" pm - a hydrogen atom is about 25 pm";
+		if(b > 1e-3) return (b/1e-3).toFixed(1)+" mm (a pinhead is about 1mm)";
+		if(b > 1e-6) return (b/1e-6).toFixed(1)+" &micro;m) (a piece of paper is about 90 &micro;m thick)";
+		if(b > 1e-9) return (b/1e-9).toFixed(1)+" nm (a bacterial flagellum is about 20 nm)";
+		if(b > 1e-12) return (b/1e-12).toFixed(1)+" pm (a hydrogen atom is about 25 pm)";
 		if(b > 1e-15) return (b/1e-15).toFixed(1)+" fm";
 		if(b > 1e-18) return (b/1e-18).toFixed(1)+" am";
 		if(b > 1e-21) return (b/1e-21).toFixed(1)+" zm";
