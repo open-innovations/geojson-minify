@@ -200,16 +200,21 @@
 		output.replace(/^(.*,"features":\[).*(\]\})$/,function(m,p1,p2){ strstart = p1; strend = p2; return p1; });
 		str = '';
 
+		// Get the precision to use
+		prec = document.getElementById('precision').value;
+		var re = RegExp('(\-?[0-9]+\.[0-9]+)','g');
+
 		// Loop over the features and stringify each separately (this lets us put newlines between them)
 		for(f = 0; f < json.features.length; f++){
 			tstr = JSON.stringify(json.features[f]);
+			if(f==35) console.log(tstr)
 			// Limit coordinate precision to the coordinates variable
 			tstr = tstr.replace(/("coordinates" ?:)([^\"\}]*)/g,function(m,p1,p2){
 				var rtn = p1;
 				if(prec > 0){
-					console.log(p2);
-					p2 = p2.replace(RegExp('(\-?[0-9]+\.[0-9]*)','g'),function(m,p3){
-						return (parseFloat(p3)).toFixed(prec);
+					p2 = p2.replace(re,function(m,p3){
+						if(p3.indexOf('.')<0) return p3;
+						else return (parseFloat(p3)).toFixed(prec);
 					});
 				}else{
 					p2 = p2.replace(/([,\[] ?\-?[0-9])\.[0-9]+/g,function(m,p3){ return p3; });
@@ -219,9 +224,6 @@
 			str += (str ? ",\n":"")+tstr;
 		}
 
-		// Get the precision to use
-		prec = document.getElementById('precision').value;
-	
 		// Build the output
 		output = strstart+'\n'+str+'\n'+strend;
 		document.getElementById('geojson').innerHTML = output;
