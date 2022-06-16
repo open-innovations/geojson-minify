@@ -215,6 +215,8 @@
 				}else{
 					p2 = p2.replace(/([,\[] ?\-?[0-9])\.[0-9]+/g,function(m,p3){ return p3; });
 				}
+				// Remove trailing zeros that don't add anything useful
+				p2 = p2.replace(/([0-9]\.[0-9]*?)0+(\s*[\,\]])/,function(m,p3,p4){ return p3+p4; });
 				return rtn + p2;
 			});
 			str += (str ? ",\n":"")+tstr;
