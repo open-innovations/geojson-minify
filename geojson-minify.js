@@ -16,10 +16,7 @@
 		
 		var _obj = this;
 		// When the user focuses on the schema output, it all gets selected
-		document.querySelector('#geojson').addEventListener('focus',function(e){
-			console.log('focus',e);
-			e.target.select();
-		});
+		document.querySelector('#geojson').addEventListener('focus',function(e){ e.target.select(); });
 		
 		document.getElementById('save').addEventListener('click',function(){ _obj.save(); });
 
@@ -207,7 +204,6 @@
 		// Loop over the features and stringify each separately (this lets us put newlines between them)
 		for(f = 0; f < json.features.length; f++){
 			tstr = JSON.stringify(json.features[f]);
-			if(f==35) console.log(tstr)
 			// Limit coordinate precision to the coordinates variable
 			tstr = tstr.replace(/("coordinates" ?:)([^\"\}]*)/g,function(m,p1,p2){
 				var rtn = p1;
