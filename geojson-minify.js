@@ -116,22 +116,39 @@
 		return this;
 	};
 	Minify.prototype.loadedGeoJSON = function(result){
-		var f,p,_obj;
+
+		var f,p,_obj,ul,props,sorted,h3;
+
 		this.filecontent = result;
-		this.json = JSON.parse(result);
+
+		// Reset things
 		this.properties = {};
+		//document.getElementById('geojson').innerHTML = '';
+
+
+		// Attempt to parse the input
+		try{
+			this.json = JSON.parse(result);
+		}catch(err){
+			this.json = {};
+			error('The JSON in your file does not appear to parse as valid.');
+		};
+
+		// Work out the size of the properties
 		for(f = 0; f < this.json.features.length; f++){
 			if(this.json.features[f].properties){
 				for(p in this.json.features[f].properties){
-          if(this.json.features[f].properties[p]){
-            if(!this.properties[p]) this.properties[p] = {'n':0,'b':0,'active':true};
-            this.properties[p].n++;
-            this.properties[p].b += (',"'+p+'":'+JSON.stringify(this.json.features[f].properties[p])).length;
-          }
+					if(this.json.features[f].properties[p]){
+						if(!this.properties[p]) this.properties[p] = {'n':0,'b':0,'active':true};
+						this.properties[p].n++;
+						this.properties[p].b += (',"'+p+'":'+JSON.stringify(this.json.features[f].properties[p])).length;
+					}
 				}
 			}
 		}
+
 		_obj = this;
+
 		function makeLI(p,b){
 			var id,li,lbl,btn,inp;
 			id = 'prop-'+p.replace(/ /g,'');
@@ -156,7 +173,6 @@
 			});
 			return {'li':li,'inp':inp,'btn':btn,'p':p};
 		}
-		var ul,props,sorted,h3;
 
 		ul = document.createElement('ul');
 		ul.classList.add('toggles');
@@ -295,7 +311,13 @@
 	function dragOff(evt){
 		evt.target.classList.remove('drop');
 	}
-
+	function error(txt){
+		console.error('ERROR: '+txt);
+		var el = document.getElementById('loader');
+		if(el){
+			el.innerHTML = '<div class="padded error"><strong>ERROR:</strong> '+txt+'</div>';
+		}
+	}
 	function niceSize(b){
 		if(b > 1e12) return (b/1e12).toFixed(2)+" TB";
 		if(b > 1e9) return (b/1e9).toFixed(2)+" GB";

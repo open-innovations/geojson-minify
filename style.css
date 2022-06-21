@@ -245,6 +245,7 @@ ol li { line-height: 1.75em; }
 	padding: 0px;
 	margin-bottom: 0;
 }
+.error { color: #D8000C; background-color: #FFBABA; }
 #save { font-size: 1.25em; margin-bottom: 0.75em;}
 #results > .holder:first-child { padding: 0em 1em 0em 1em; }
 #main { min-height: 500px; }
