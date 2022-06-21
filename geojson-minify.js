@@ -131,7 +131,7 @@
 			this.json = JSON.parse(result);
 		}catch(err){
 			this.json = {};
-			error('The JSON in your file does not appear to parse as valid.');
+			error('The JSON in your file does not appear to parse as valid. You may want to check it with <a href="https://jsonlint.com/">JSON Lint</a>');
 		};
 
 		// Work out the size of the properties
