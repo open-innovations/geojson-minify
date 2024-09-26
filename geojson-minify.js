@@ -151,7 +151,7 @@
 
 		function makeLI(p,b){
 			var id,li,lbl,btn,inp;
-			id = 'prop-'+p.replace(/ /g,'');
+			id = 'prop-'+p.replace(/ /g,'').replace(/\@/,'-');
 			li = document.createElement('li');
 			li.classList.add('seasonal');
 			li.setAttribute('title',p);
